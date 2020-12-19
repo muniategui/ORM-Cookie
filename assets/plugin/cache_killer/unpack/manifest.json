@@ -1,0 +1,36 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+    "manifest_version": 2,
+    
+    "name": "Cache Killer",
+    "description": "Clears the browser cache automatically. On or Off extension by single click",
+    "version": "1.0.14.6",
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+    
+    "incognito": "split",
+    
+    "browser_action": {
+        "default_icon": "on.png",        
+        "default_title": "Cache Killer is on"
+    },
+    
+    "permissions": [        
+        "tabs",
+        "activeTab",        
+        "http://*/*",
+        "https://*/*" ,        
+        "browsingData" ,
+        "identity",
+        "storage",
+        "webRequest",
+        "webRequestBlocking"
+    ],
+    
+    "background": {
+        "scripts" : ["f.js",  "b.js"]
+    }    
+    
+}
+
+
