@@ -158,13 +158,7 @@ def clickonall(list,matched,driver,domain):
                         driver.switch_to.window(driver.window_handles[0])
         except:
             pass
-
-def find_all_iframes(driver,found,domain,deep,process):
-    deep= deep + 1
-    if deep == 4:
-       # logger.info('!!!!In: {} proc: {} May be FUCKED reached 2 deep'.format(domain.values['name'],process))
-        driver.switch_to.default_content()
-        return
+def find_patterns(driver,found,domain):
     try:
         found['Found'] = driver.find_elements_by_xpath(
             '//Body//*[contains(translate(text(),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"accept")]')
@@ -262,6 +256,14 @@ def find_all_iframes(driver,found,domain,deep,process):
         clickonall(found, 'aceit',driver,domain)
     except:
         pass
+
+def find_all_iframes(driver,found,domain,deep,process):
+    #deep= deep + 1
+    #if deep == 4:
+       # logger.info('!!!!In: {} proc: {} May be FUCKED reached 2 deep'.format(domain.values['name'],process))
+     #   driver.switch_to.default_content()
+     #   return
+    find_patterns(driver,found,domain)
     iframes = driver.find_elements_by_xpath('//iframe')
     for index, iframe in enumerate(iframes):
         # Your sweet business logic applied to iframe goes here.
@@ -270,7 +272,8 @@ def find_all_iframes(driver,found,domain,deep,process):
             driver.switch_to.frame(index)
         except:
             pass
-        find_all_iframes(driver,found,domain,deep,process)
+        #find_all_iframes(driver,found,domain,deep,process)
+        find_patterns(driver, found, domain)
         try:
             driver.switch_to.parent_frame()
         except:
@@ -304,12 +307,14 @@ def visit_site(db, process, driver, domain, plugin, temp_folder, cache):
     found = {'Found': [], 'Clicked': False}
     handles = len(driver.window_handles)
     find_all_iframes(driver, found, domain,0,process)
+    driver.switch_to.default_content()
     db.clicked(domain,found['Clicked'])
     logger.info("In {} proc: {} clicked = {}".format(domain.values["name"],process, found['Clicked']))
 
-    if found['Clicked']:
-        driver.execute_script("location.reload(true);")
-        time.sleep(10)
+   # if found['Clicked']:
+        #driver.execute_script("location.reload(true);")
+    driver.refresh()
+    time.sleep(10)
     # Get network traffic dictionary
     # logger.debug(driver.log_types)
     log_entries = driver.get_log('performance')
