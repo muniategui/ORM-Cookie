@@ -114,7 +114,9 @@ def reset_browser(driver, process, plugin, cache):
             driver = build_driver(plugin, cache, process)
         driver.set_page_load_timeout(30)
     return driver
-def clickonall(list,matched,driver,domain):
+
+
+def clickonall(list, matched, driver, domain):
     for element in list['Found']:
         try:
             hashref = element.get_attribute('href')
@@ -158,7 +160,9 @@ def clickonall(list,matched,driver,domain):
                         driver.switch_to.window(driver.window_handles[0])
         except:
             pass
-def find_patterns(driver,found,domain):
+
+
+def find_patterns(driver, found, domain):
     try:
         found['Found'] = driver.find_elements_by_xpath(
             '//Body//*[contains(translate(text(),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"accept")]')
@@ -257,7 +261,7 @@ def find_patterns(driver,found,domain):
     except:
         pass
 
-def find_all_iframes(driver,found,domain,deep,process):
+def find_all_iframes(driver, found, domain, deep, process):
     #deep= deep + 1
     #if deep == 4:
        # logger.info('!!!!In: {} proc: {} May be FUCKED reached 2 deep'.format(domain.values['name'],process))
@@ -303,13 +307,14 @@ def visit_site(db, process, driver, domain, plugin, temp_folder, cache):
         logger.error("%s (proc. %d)" % (str(e), process))
         driver = reset_browser(driver, process, plugin, cache)
         return driver, True
-    time.sleep(10)
-    found = {'Found': [], 'Clicked': False}
-    handles = len(driver.window_handles)
-    find_all_iframes(driver, found, domain,0,process)
-    driver.switch_to.default_content()
-    db.clicked(domain,found['Clicked'])
-    logger.info("In {} proc: {} clicked = {}".format(domain.values["name"],process, found['Clicked']))
+    else:
+        time.sleep(10)
+        found = {'Found': [], 'Clicked': False}
+        handles = len(driver.window_handles)
+        find_all_iframes(driver, found, domain,0,process)
+        driver.switch_to.default_content()
+        domain.values["clicked"] = found['Clicked']
+        logger.info("In {} proc: {} clicked = {}".format(domain.values["name"],process, found['Clicked']))
 
    # if found['Clicked']:
         #driver.execute_script("location.reload(true);")
